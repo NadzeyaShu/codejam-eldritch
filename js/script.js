@@ -14,8 +14,8 @@ ancientCards.forEach(element => element.addEventListener('click', () => highLigh
 ancientCards.forEach(element => element.addEventListener('click', createShuffleButton));
 ancientCards.forEach(element => element.addEventListener('click', createDifficultyList));
 ancientCards.forEach(element => element.addEventListener('click', clearStageContainers));
-
-ancientCards.forEach(element => element.addEventListener('click', () => selectAncient(element)));
+ancientCards.forEach(element => element.addEventListener('click', () => selectAncient(element.id)));
+ancientCards.forEach(element => element.addEventListener('click', resetStates));
 
 difficultyContainer.addEventListener('click', createShuffleButton);
 difficultyContainer.addEventListener('click', clearStageContainers);
@@ -37,7 +37,7 @@ let isFirstStageComplete;
 let isSecondStageComplete;
 let isThirdStageComplete;
 
-let gameDeskCardArray;
+let gameDeskCardArray = [];
 
 function createAncientsList() {
     ancientsData.forEach(ancient => {
@@ -59,6 +59,7 @@ function createDifficultyList() {
             div.id = difficulty.id;
             div.addEventListener('click', () => highLightDifficulty(div));
             div.addEventListener('click', () => selectDifficulty(div));
+            div.addEventListener('click', resetStates);
             difficultyContainer.append(div);
         });
     }
@@ -84,10 +85,6 @@ function shuffleCards() {
     shuffleBlueCards();
     shuffleGreenCards();
     shuffleBrownCards();
-
-    console.log(blueCardArray);
-    console.log(greenCardArray);
-    console.log(brownCardArray);
 }
 
 function shuffleBlueCards() {
@@ -187,8 +184,27 @@ function highLightAncient(element) {
     element.classList.add('active');
 }
 
-function selectAncient(element) {
-    selectedAncient = ancientsData.find(ancient => ancient.id === element.id);
+function selectAncient(ancientId) {
+    let ancient = ancientsData.find(ancient => ancient.id === ancientId);
+    selectedAncient = JSON.parse(JSON.stringify(ancient));
+}
+
+function resetStates() {
+    selectAncient(selectedAncient.id);
+
+    blueCardArray = [];
+    greenCardArray = [];
+    brownCardArray = [];
+
+    firstStepCardArray = [];
+    secondStepCardArray = [];
+    thirdStepCardArray = [];
+
+    isFirstStageComplete = false;
+    isSecondStageComplete = false;
+    isThirdStageComplete = false;
+
+    gameDeskCardArray = [];
 }
 
 function createCurrentState() {
@@ -264,7 +280,15 @@ function createDesk() {
     div.classList.add('desk');
     div.addEventListener("click", getCard)
     div.addEventListener("click", updateDots)
+    div.addEventListener("click", removeDeskWhenFinish)
     deskContainer.append(div);
+}
+
+function removeDeskWhenFinish() {
+    if (isFirstStageComplete && isSecondStageComplete && isThirdStageComplete) {
+        document.querySelector(".desk").remove();
+        console.log(gameDeskCardArray);
+    }
 }
 
 function updateDots() {
@@ -363,6 +387,8 @@ function getFirstStageCard() {
     }
     if (selectedAncient.firstStage.greenCards === 0 && selectedAncient.firstStage.blueCards === 0 && selectedAncient.firstStage.brownCards === 0) {
         isFirstStageComplete = true;
+        shuffleArray(firstStepCardArray);
+        gameDeskCardArray.unshift(...firstStepCardArray);
         let stageText = document.querySelector(".stage_container_first").getElementsByClassName('stage-text')[0];
         stageText.classList.add("red");
     }
@@ -386,6 +412,9 @@ function getSecondStageCard() {
     }
     if (selectedAncient.secondStage.greenCards === 0 && selectedAncient.secondStage.blueCards === 0 && selectedAncient.secondStage.brownCards === 0) {
         isSecondStageComplete = true;
+        shuffleArray(secondStepCardArray);
+        gameDeskCardArray.unshift(...secondStepCardArray);
+
         let stageText = document.querySelector(".stage_container_second").getElementsByClassName('stage-text')[0];
         stageText.classList.add("red");
     }
@@ -409,6 +438,8 @@ function getThirdStageCard() {
     }
     if (selectedAncient.thirdStage.greenCards === 0 && selectedAncient.thirdStage.blueCards === 0 && selectedAncient.thirdStage.brownCards === 0) {
         isThirdStageComplete = true;
+        shuffleArray(thirdStepCardArray);
+        gameDeskCardArray.unshift(...thirdStepCardArray);
         let stageText = document.querySelector(".stage_container_third").getElementsByClassName('stage-text')[0];
         stageText.classList.add("red");
     }
