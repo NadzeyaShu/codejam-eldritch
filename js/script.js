@@ -76,12 +76,35 @@ function createShuffleButton() {
         span.classList.add('shuffle-button');
         span.innerText = 'Замешать колоду';
         span.addEventListener("click", createCurrentState);
-        span.addEventListener("click", shuffleCards);
+        span.addEventListener("click", filterAndShuffleCardsByColor);
+        span.addEventListener("click", createDeskByStages);
         deskContainer.append(span);
     }
 }
 
-function shuffleCards() {
+function createDeskByStages() {
+    createDeskForStage(selectedAncient.firstStage, firstStepCardArray);
+    createDeskForStage(selectedAncient.secondStage, secondStepCardArray);
+    createDeskForStage(selectedAncient.thirdStage, thirdStepCardArray);
+}
+
+function createDeskForStage(stage, stepCardArray) {
+    for (let i = 0; i < stage.greenCards; i++) {
+        let card = greenCardArray.pop();
+        stepCardArray.push(card);
+    }
+    for (let i = 0; i < stage.blueCards; i++) {
+        let card = blueCardArray.pop();
+        stepCardArray.push(card);
+    }
+    for (let i = 0; i < stage.brownCards; i++) {
+        let card = brownCardArray.pop();
+        stepCardArray.push(card);
+    }
+    shuffleArray(stepCardArray);
+}
+
+function filterAndShuffleCardsByColor() {
     shuffleBlueCards();
     shuffleGreenCards();
     shuffleBrownCards();
@@ -185,13 +208,10 @@ function highLightAncient(element) {
 }
 
 function selectAncient(ancientId) {
-    let ancient = ancientsData.find(ancient => ancient.id === ancientId);
-    selectedAncient = JSON.parse(JSON.stringify(ancient));
+    selectedAncient = ancientsData.find(ancient => ancient.id === ancientId);
 }
 
 function resetStates() {
-    selectAncient(selectedAncient.id);
-
     blueCardArray = [];
     greenCardArray = [];
     brownCardArray = [];
@@ -257,7 +277,6 @@ function createStageContainer(currentState, spanText, stageContainerClass, stage
     blueDot.classList.add("blue");
     blueDot.textContent = stage.blueCards;
     divDotsContainer.append(blueDot);
-
 }
 
 function clearStageContainers() {
@@ -279,7 +298,6 @@ function createDesk() {
     const div = document.createElement("div");
     div.classList.add('desk');
     div.addEventListener("click", getCard)
-    div.addEventListener("click", updateDots)
     div.addEventListener("click", removeDeskWhenFinish)
     deskContainer.append(div);
 }
@@ -288,66 +306,6 @@ function removeDeskWhenFinish() {
     if (isFirstStageComplete && isSecondStageComplete && isThirdStageComplete) {
         document.querySelector(".desk").remove();
         console.log(gameDeskCardArray);
-    }
-}
-
-function updateDots() {
-    updateFirstStageDots();
-    updateSecondStageDots();
-    updateThirdStageDots();
-}
-
-function updateFirstStageDots() {
-    let firstStageDots = document.querySelector(".stage_container_first")
-        .getElementsByClassName("dots-container")[0]
-        .getElementsByClassName("dot");
-
-    for (let dotElement of firstStageDots) {
-        if (dotElement.classList.contains("green")) {
-            dotElement.textContent = selectedAncient.firstStage.greenCards;
-        }
-        if (dotElement.classList.contains("brown")) {
-            dotElement.textContent = selectedAncient.firstStage.brownCards;
-        }
-        if (dotElement.classList.contains("blue")) {
-            dotElement.textContent = selectedAncient.firstStage.blueCards;
-        }
-    }
-}
-
-function updateSecondStageDots() {
-    let secondStageDots = document.querySelector(".stage_container_second")
-        .getElementsByClassName("dots-container")[0]
-        .getElementsByClassName("dot");
-
-    for (let dotElement of secondStageDots) {
-        if (dotElement.classList.contains("green")) {
-            dotElement.textContent = selectedAncient.secondStage.greenCards;
-        }
-        if (dotElement.classList.contains("brown")) {
-            dotElement.textContent = selectedAncient.secondStage.brownCards;
-        }
-        if (dotElement.classList.contains("blue")) {
-            dotElement.textContent = selectedAncient.secondStage.blueCards;
-        }
-    }
-}
-
-function updateThirdStageDots() {
-    let thirdStageDots = document.querySelector(".stage_container_third")
-        .getElementsByClassName("dots-container")[0]
-        .getElementsByClassName("dot");
-
-    for (let dotElement of thirdStageDots) {
-        if (dotElement.classList.contains("green")) {
-            dotElement.textContent = selectedAncient.thirdStage.greenCards;
-        }
-        if (dotElement.classList.contains("brown")) {
-            dotElement.textContent = selectedAncient.thirdStage.brownCards;
-        }
-        if (dotElement.classList.contains("blue")) {
-            dotElement.textContent = selectedAncient.thirdStage.blueCards;
-        }
     }
 }
 
@@ -372,23 +330,17 @@ function showCard(card) {
 
 function getFirstStageCard() {
     let card;
-    if (selectedAncient.firstStage.greenCards > 0) {
-        card = greenCardArray.pop();
-        firstStepCardArray.push(card);
-        selectedAncient.firstStage.greenCards = selectedAncient.firstStage.greenCards - 1;
-    } else if (selectedAncient.firstStage.blueCards > 0) {
-        card = blueCardArray.pop();
-        firstStepCardArray.push(card);
-        selectedAncient.firstStage.blueCards = selectedAncient.firstStage.blueCards - 1;
-    } else if (selectedAncient.firstStage.brownCards > 0) {
-        card = brownCardArray.pop();
-        firstStepCardArray.push(card);
-        selectedAncient.firstStage.brownCards = selectedAncient.firstStage.brownCards - 1;
+    if (firstStepCardArray.length > 0) {
+        card = firstStepCardArray.pop();
+        let dotElement = Array.from(document.querySelector(".stage_container_first")
+            .getElementsByClassName("dots-container")[0]
+            .getElementsByClassName("dot"))
+            .find(dotElement => dotElement.classList.contains(card.color));
+
+        dotElement.textContent = (Number(dotElement.textContent) - 1).toString();
     }
-    if (selectedAncient.firstStage.greenCards === 0 && selectedAncient.firstStage.blueCards === 0 && selectedAncient.firstStage.brownCards === 0) {
+    if (firstStepCardArray.length <= 0) {
         isFirstStageComplete = true;
-        shuffleArray(firstStepCardArray);
-        gameDeskCardArray.unshift(...firstStepCardArray);
         let stageText = document.querySelector(".stage_container_first").getElementsByClassName('stage-text')[0];
         stageText.classList.add("red");
     }
@@ -397,24 +349,17 @@ function getFirstStageCard() {
 
 function getSecondStageCard() {
     let card;
-    if (selectedAncient.secondStage.greenCards > 0) {
-        card = greenCardArray.pop();
-        secondStepCardArray.push(card);
-        selectedAncient.secondStage.greenCards = selectedAncient.secondStage.greenCards - 1;
-    } else if (selectedAncient.secondStage.blueCards > 0) {
-        card = blueCardArray.pop();
-        secondStepCardArray.push(card);
-        selectedAncient.secondStage.blueCards = selectedAncient.secondStage.blueCards - 1;
-    } else if (selectedAncient.secondStage.brownCards > 0) {
-        card = brownCardArray.pop();
-        secondStepCardArray.push(card);
-        selectedAncient.secondStage.brownCards = selectedAncient.secondStage.brownCards - 1;
-    }
-    if (selectedAncient.secondStage.greenCards === 0 && selectedAncient.secondStage.blueCards === 0 && selectedAncient.secondStage.brownCards === 0) {
-        isSecondStageComplete = true;
-        shuffleArray(secondStepCardArray);
-        gameDeskCardArray.unshift(...secondStepCardArray);
+    if (secondStepCardArray.length > 0) {
+        card = secondStepCardArray.pop();
+        let dotElement = Array.from(document.querySelector(".stage_container_second")
+            .getElementsByClassName("dots-container")[0]
+            .getElementsByClassName("dot"))
+            .find(dotElement => dotElement.classList.contains(card.color));
 
+        dotElement.textContent = (Number(dotElement.textContent) - 1).toString();
+    }
+    if (secondStepCardArray.length <= 0) {
+        isSecondStageComplete = true;
         let stageText = document.querySelector(".stage_container_second").getElementsByClassName('stage-text')[0];
         stageText.classList.add("red");
     }
@@ -423,27 +368,27 @@ function getSecondStageCard() {
 
 function getThirdStageCard() {
     let card;
-    if (selectedAncient.thirdStage.greenCards > 0) {
-        card = greenCardArray.pop();
-        thirdStepCardArray.push(card);
-        selectedAncient.thirdStage.greenCards = selectedAncient.thirdStage.greenCards - 1;
-    } else if (selectedAncient.thirdStage.blueCards > 0) {
-        card = blueCardArray.pop();
-        thirdStepCardArray.push(card);
-        selectedAncient.thirdStage.blueCards = selectedAncient.thirdStage.blueCards - 1;
-    } else if (selectedAncient.thirdStage.brownCards > 0) {
-        card = brownCardArray.pop();
-        thirdStepCardArray.push(card);
-        selectedAncient.thirdStage.brownCards = selectedAncient.thirdStage.brownCards - 1;
+    if (thirdStepCardArray.length > 0) {
+        card = thirdStepCardArray.pop();
+        changeDot(card);
     }
-    if (selectedAncient.thirdStage.greenCards === 0 && selectedAncient.thirdStage.blueCards === 0 && selectedAncient.thirdStage.brownCards === 0) {
+    if (thirdStepCardArray.length <= 0) {
         isThirdStageComplete = true;
-        shuffleArray(thirdStepCardArray);
-        gameDeskCardArray.unshift(...thirdStepCardArray);
         let stageText = document.querySelector(".stage_container_third").getElementsByClassName('stage-text')[0];
         stageText.classList.add("red");
     }
     return card;
+}
+
+function changeDot(card) {
+    let dotElement = Array.from(
+        document.querySelector(".stage_container_third")
+            .getElementsByClassName("dots-container")[0]
+            .getElementsByClassName("dot")
+    )
+        .find(dotElement => dotElement.classList.contains(card.color));
+
+    dotElement.textContent = (Number(dotElement.textContent) - 1).toString();
 }
 
 function createLastCard() {
