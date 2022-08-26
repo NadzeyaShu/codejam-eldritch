@@ -1,78 +1,76 @@
-import blueCardsAssets from '../../../assets/MythicCards/blue';
-
-const cardsData = [
+const blueCardsData = [
   {
     id: 'blue1',
-    cardFace: blueCardsAssets.blue1,
     difficulty: 'hard',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue1.png',
   },
   {
     id: 'blue2',
-    cardFace: blueCardsAssets.blue2,
     difficulty: 'hard',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue2.png',
   },
   {
     id: 'blue3',
-    cardFace: blueCardsAssets.blue3,
     difficulty: 'easy',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue3.png',
   },
   {
     id: 'blue4',
-    cardFace: blueCardsAssets.blue4,
     difficulty: 'easy',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue4.png',
   },
   {
     id: 'blue5',
-    cardFace: blueCardsAssets.blue5,
     difficulty: 'easy',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue5.png',
   },
   {
     id: 'blue6',
-    cardFace: blueCardsAssets.blue6,
     difficulty: 'hard',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue6.png',
   },
   {
     id: 'blue7',
-    cardFace: blueCardsAssets.blue7,
     difficulty: 'normal',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue7.png',
   },
   {
     id: 'blue8',
-    cardFace: blueCardsAssets.blue8,
     difficulty: 'hard',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue8.png',
   },
   {
     id: 'blue9',
-    cardFace: blueCardsAssets.blue9,
     difficulty: 'normal',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue9.png',
   },
   {
     id: 'blue10',
-    cardFace: blueCardsAssets.blue10,
     difficulty: 'easy',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue10.png',
   },
   {
     id: 'blue11',
-    cardFace: blueCardsAssets.blue11,
     difficulty: 'normal',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue11.png',
   },
   {
     id: 'blue12',
-    cardFace: blueCardsAssets.blue12,
     difficulty: 'normal',
-    color:'blue'
+    color:'blue',
+    imgSource: '../codejam-eldritch/assets/MythicCards/blue/blue12.png',
   },
 ]
 
-export default cardsData
+export default blueCardsData

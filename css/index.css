@@ -114,6 +114,10 @@ html {
     font-size: large;
 }
 
+.red {
+    color: red;
+}
+
 .dots-container {
     align-items: center;
     display: flex;
@@ -152,7 +156,6 @@ html {
 }
 
 .last-card {
-    background-image: url("../assets/mythicCardBackground.png");
     background-size: cover;
     height: 190px;
     width: 130px;
