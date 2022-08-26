@@ -37,8 +37,6 @@ let isFirstStageComplete;
 let isSecondStageComplete;
 let isThirdStageComplete;
 
-let gameDeskCardArray = [];
-
 function createAncientsList() {
     ancientsData.forEach(ancient => {
         const div = document.createElement("div");
@@ -223,8 +221,6 @@ function resetStates() {
     isFirstStageComplete = false;
     isSecondStageComplete = false;
     isThirdStageComplete = false;
-
-    gameDeskCardArray = [];
 }
 
 function createCurrentState() {
@@ -305,7 +301,6 @@ function createDesk() {
 function removeDeskWhenFinish() {
     if (isFirstStageComplete && isSecondStageComplete && isThirdStageComplete) {
         document.querySelector(".desk").remove();
-        console.log(gameDeskCardArray);
     }
 }
 
